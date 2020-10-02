@@ -13,13 +13,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/** 
+/**
  * NOTE: While publicly, SocketRocket does not support configuring the security policy with pinned certificates,
  * it is still possible to manually construct a security policy of this class. If you do this, note that you may
  * be open to MitM attacks, and we will not support any issues you may have. Dive at your own risk.
  */
 @interface SRPinningSecurityPolicy : SRSecurityPolicy
-
+@property (nonatomic, copy, readonly) NSDictionary *SSLSettingDic;
 - (instancetype)initWithCertificates:(NSArray *)pinnedCertificates;
 
 @end

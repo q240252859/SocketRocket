@@ -12,7 +12,7 @@
 #import <Foundation/Foundation.h>
 
 #import "SRLog.h"
-
+//#import "SocketSSLSetting.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface SRPinningSecurityPolicy ()
@@ -23,7 +23,21 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation SRPinningSecurityPolicy
 
-- (instancetype)initWithCertificates:(NSArray *)pinnedCertificates
+- (void)updateSecurityOptionsInStream:(NSStream*)stream{
+
+    // Enforce TLS 1.2
+
+    [stream setProperty:(__bridge id)CFSTR("kCFStreamSocketSecurityLevelTLSv1_2") forKey:(__bridge id)kCFStreamPropertySocketSecurityLevel];
+
+    // Validate certificate chain for this stream if enabled.
+//[self defaultSetting];
+//    NSDictionary *sslOptions = [SocketSSLSetting defaultSetting];
+
+        [stream setProperty:_SSLSettingDic forKey:(__bridge NSString *)kCFStreamPropertySSLSettings];
+
+}
+
+- (instancetype)initWithCertificates:(NSArray *)pinnedCertificates :(NSDictionary *)SSLSettingDic
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated"
@@ -41,6 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
                                      userInfo:nil];
     }
     _pinnedCertificates = [pinnedCertificates copy];
+    _SSLSettingDic = [SSLSettingDic copy];;
 
     return self;
 }
